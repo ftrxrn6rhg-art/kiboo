@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "build:frontend": "npm --prefix ../frontend run build"
+    "build:frontend": "npm --prefix ../frontend install --include=dev --no-package-lock && npm --prefix ../frontend run build"
   },
   "keywords": [],
   "author": "",
