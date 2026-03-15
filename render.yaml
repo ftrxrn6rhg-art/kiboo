@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: kiboo
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npm run build:frontend
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES
+        value: 90d
+      - key: CORS_ORIGIN
+        sync: false

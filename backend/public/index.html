@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EdTech Demo Player</title>
+
+  <!-- HLS.js -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    body {
+      background: #0f172a;
+      color: #e5e7eb;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 12px;
+      width: 720px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 10px;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <video id="video" controls></video>
+  </div>
+
+  <script>
+    const video = document.getElementById("video");
+
+    // 👇 BU YERGA O'ZINGNI VIDEO_ID QO'Y
+    const videoId = "694306c1d81017337dd89bc3";
+
+    const hlsUrl = `/uploads/hls/${videoId}/index.m3u8`;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(hlsUrl);
+      hls.attachMedia(video);
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = hlsUrl;
+    } else {
+      alert("HLS bu brauzerda qo‘llab-quvvatlanmaydi");
+    }
+  </script>
+
+</body>
+</html>

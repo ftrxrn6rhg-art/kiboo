@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EdTech Video Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      width: 800px;
+    }
+    video {
+      width: 100%;
+      border-radius: 12px;
+    }
+    h1 {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>🎬 EdTech HLS Video Demo</h1>
+    <video id="video" controls></video>
+  </div>
+
+  <script>
+    const video = document.getElementById("video");
+
+    // 🔴 VIDEO_ID ni shu yerga qo‘y
+    const VIDEO_ID = "694306c1d81017337dd89bc3";
+
+    const videoSrc = `http://localhost:3000/uploads/hls/${VIDEO_ID}/index.m3u8`;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = videoSrc;
+    }
+  </script>
+</body>
+</html>

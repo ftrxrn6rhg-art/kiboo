@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EdTech Demo Player</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <style>
+    body {
+      background: #0f172a;
+      color: #e5e7eb;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 12px;
+      width: min(720px, 95vw);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      display: grid;
+      gap: 12px;
+    }
+    video {
+      width: 100%;
+      border-radius: 10px;
+      background: black;
+    }
+    .row { display:flex; gap:10px; align-items:center; flex-wrap: wrap; }
+    input {
+      flex: 1;
+      min-width: 240px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: #e5e7eb;
+      outline: none;
+    }
+    button{
+      padding:10px 14px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      background:#111827;
+      color:#e5e7eb;
+      cursor:pointer;
+    }
+    button:hover{ opacity: .9; }
+    .hint { opacity: .75; font-size: 13px; line-height: 1.4; }
+    .err { color: #fb7185; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h3 style="margin:0">Demo Player (HLS)</h3>
+
+    <div class="row">
+      <input id="videoId" placeholder="Video ID (masalan: 694f07b11525d90e77a3562d)" />
+      <button id="playBtn">Play</button>
+    </div>
+
+    <div class="hint">
+      1) Student token kerak bo‘lmaydi (bizning HLS endpoint token so‘raydi, lekin demo.html hozir public).
+      <br/>
+      2) Eng oson test: <code>/uploads/hls/VIDEO_ID/index.m3u8</code> mavjud bo‘lsa o‘ynaydi.
+    </div>
+
+    <div id="err" class="err"></div>
+
+    <video id="video" controls></video>
+  </div>
+
+  <script>
+    const video = document.getElementById("video");
+    const input = document.getElementById("videoId");
+    const errBox = document.getElementById("err");
+    const btn = document.getElementById("playBtn");
+
+    function setErr(msg) {
+      errBox.textContent = msg || "";
+    }
+
+    function play(videoId) {
+      setErr("");
+
+      if (!videoId) {
+        setErr("Video ID kiriting.");
+        return;
+      }
+
+      const hlsUrl = `/uploads/hls/${videoId}/index.m3u8`;
+
+      if (window.hls) {
+        window.hls.destroy();
+        window.hls = null;
+      }
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        window.hls = hls;
+        hls.loadSource(hlsUrl);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.ERROR, function (event, data) {
+          setErr("HLS error: " + (data?.details || data?.type || "unknown"));
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = hlsUrl;
+      } else {
+        setErr("HLS bu brauzerda qo‘llab-quvvatlanmaydi");
+      }
+    }
+
+    btn.addEventListener("click", () => play(input.value.trim()));
+  </script>
+
+</body>
+</html>
