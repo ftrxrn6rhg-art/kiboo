@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -7,7 +7,6 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import Marketing from "./pages/Marketing";
 import LoginPage from "./pages/Login";
 import Teacher from "./pages/Teacher";
 import Parent from "./pages/Parent";
@@ -16,9 +15,19 @@ import Home from "./pages/Home";
 import VerifyEmail from "./pages/VerifyEmail";
 import ResetPassword from "./pages/ResetPassword";
 import Admin from "./pages/Admin";
-/* ---------------- auth helpers ---------------- */
+
 function getTokenByKey(key) {
   return localStorage.getItem(key) || "";
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
 }
 
 function ProtectedRoute({ tokenKey, children }) {
@@ -32,7 +41,9 @@ function ProtectedRoute({ tokenKey, children }) {
         ? "teacher"
         : tokenKey === "STUDENT_TOKEN"
           ? "student"
-          : "parent";
+          : tokenKey === "ADMIN_TOKEN"
+            ? "admin"
+            : "parent";
 
     return <Navigate to={`/login?role=${role}&next=${next}`} replace />;
   }
@@ -43,14 +54,13 @@ function ProtectedRoute({ tokenKey, children }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
-        {/* Marketing */}
         <Route path="/" element={<Home />} />
-
-        {/* Login */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+
         <Route
           path="/admin"
           element={
@@ -59,8 +69,6 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* Protected pages (role-based) */}
         <Route
           path="/teacher"
           element={
@@ -86,7 +94,6 @@ export default function App() {
           }
         />
 
-        {/* fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
