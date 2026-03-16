@@ -25,19 +25,32 @@ const localNetworkPatterns = [
   /^https?:\/\/172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+(:\d+)?$/,
 ];
 
+function isAllowedOrigin(origin) {
+  if (!origin) return true;
+
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+
+  if (localNetworkPatterns.some((pattern) => pattern.test(origin))) {
+    return true;
+  }
+
+  try {
+    const { protocol, hostname } = new URL(origin);
+    if ((protocol === "https:" || protocol === "http:") && hostname.endsWith(".onrender.com")) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+
+  return false;
+}
+
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin) {
-      callback(null, true);
-      return;
-    }
-
-    if (allowedOrigins.length && allowedOrigins.includes(origin)) {
-      callback(null, true);
-      return;
-    }
-
-    if (!allowedOrigins.length && localNetworkPatterns.some((pattern) => pattern.test(origin))) {
+    if (isAllowedOrigin(origin)) {
       callback(null, true);
       return;
     }
