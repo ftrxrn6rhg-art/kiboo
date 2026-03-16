@@ -46,7 +46,6 @@ const corsOptions = {
   },
   credentials: false,
 };
-app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -62,6 +61,7 @@ app.use("/public", express.static(path.join(__dirname, "public")));
 /* =======================
    ROUTES
 ======================= */
+app.use("/api", cors(corsOptions));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/subjects", require("./routes/subjectRoutes"));
 app.use("/api/topics", require("./routes/topicRoutes"));
