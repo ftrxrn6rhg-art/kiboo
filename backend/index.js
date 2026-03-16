@@ -56,8 +56,8 @@ app.use(express.urlencoded({ extended: true }));
 // video HLS va uploadlar uchun
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// demo.html kabi fayllar bo‘lsa
-app.use(express.static(path.join(__dirname, "public")));
+// Demo/static fayllarni ildiz path bilan to'qnashmasligi uchun alohida prefix ostida beramiz.
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 /* =======================
    ROUTES
